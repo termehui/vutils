@@ -181,3 +181,21 @@ hub.onError((m, err) =>
   console.error(`${err} error received from ${m} method!`)
 ); // called if no error handler registered for event
 ```
+
+## Auto Importer
+
+You can use this plugin to auto register components to app.
+
+```js
+import { createApp } from "vue";
+import { AutoComponent } from "@termehui/vutils";
+
+const app = createApp(Layout);
+app.use(AutoComponent([
+  { 
+    files: import.meta.globEager('./components/icons/*.vue'), // vite function to get files list
+    prefix: "I",
+  }, // register IAdd, IEdit, IDelete, ... icons component
+]));
+app.mount();
+```
