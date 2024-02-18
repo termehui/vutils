@@ -69,13 +69,13 @@ addShortcut({
   key: "Enter",
   callback: callbackA,
   prevent: true,
-  stop: true
+  stop: true,
 });
 addShortcut({
   key: ["Escape", "-"],
   callback: callbackB,
   prevent: true,
-  stop: true
+  stop: true,
 });
 ```
 
@@ -109,18 +109,18 @@ onMounted(() => parseHash(queryString)); // parse current data from url
 
 All options are optional and lister use default value if option not passed or invalid value passed.
 
-| Option   | Type                  | Default                              | Description                                                |
-| :------- | :-------------------- | :----------------------------------- | :--------------------------------------------------------- |
-| triggers | `Trigger[] | "all"`   | `["page", "limit", "sort", "order"]` | auto apply on field change                                 |
-| stores   | `Store[]`             | `[]`                                 | stored items in local storage                              |
-| limits   | `number[]`            | `[]`                                 | valid limit list. if empty array passed all value allowed! |
-| sorts    | `string[]`            | `[]`                                 | valid sort list. if empty array passed all value allowed!  |
-| page     | `number`              | `1`                                  | init page                                                  |
-| limit    | `number`              | `25`                                 | init limit                                                 |
-| sort     | `string`              | `_id`                                | init sort                                                  |
-| order    | `"asc" | "desc"`      | `asc`                                | init order                                                 |
-| search   | `string`              | `""`                                 | init search phrase                                         |
-| filters  | `Record<string, any>` | `{}`                                 | init filters list                                          |
+| Option   | Type                  | Default | Description                                                |
+| :------- | :-------------------- | :------ | :--------------------------------------------------------- | -------------------------- |
+| triggers | `Trigger[]            | "all"`  | `["page", "limit", "sort", "order"]`                       | auto apply on field change |
+| stores   | `Store[]`             | `[]`    | stored items in local storage                              |
+| limits   | `number[]`            | `[]`    | valid limit list. if empty array passed all value allowed! |
+| sorts    | `string[]`            | `[]`    | valid sort list. if empty array passed all value allowed!  |
+| page     | `number`              | `1`     | init page                                                  |
+| limit    | `number`              | `25`    | init limit                                                 |
+| sort     | `string`              | `_id`   | init sort                                                  |
+| order    | `"asc"                | "desc"` | `asc`                                                      | init order                 |
+| search   | `string`              | `""`    | init search phrase                                         |
+| filters  | `Record<string, any>` | `{}`    | init filters list                                          |
 
 **Trigger** can be `"page" | "limit" | "sort" | "order" | "search" | "filters"`.
 
@@ -135,7 +135,7 @@ All options are optional and lister use default value if option not passed or in
 #### Usage
 
 | Method/Attribute | Type                                                   | Description                                                                                              |
-| :--------------- | :----------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| :--------------- | :----------------------------------------------------- | :------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | page             | `ref<number>`                                          | reactive page field                                                                                      |
 | limit            | `ref<number>`                                          | reactive limit field                                                                                     |
 | sort             | `ref<string>`                                          | reactive sort field                                                                                      |
@@ -149,8 +149,8 @@ All options are optional and lister use default value if option not passed or in
 | filterValue      | `<T = any>(k: string) => void`                         | get a computed ref for filter item                                                                       |
 | filterExists     | `(k: string, v: any) => ComputedRef<boolean>`          | get a computed ref for filter item exists                                                                |
 | clearFilters     | `() => void`                                           | clear filters and fire `apply(["filters"])`                                                              |
-| apply            | `(items?: Trigger[] | "all") => void`                  | apply staged changes                                                                                     |
-| reset            | `(items?: Trigger[] | "all") => void`                  | discard staged (un-applied) changes                                                                      |
+| apply            | `(items?: Trigger[]                                    | "all") => void`                                                                                          | apply staged changes                |
+| reset            | `(items?: Trigger[]                                    | "all") => void`                                                                                          | discard staged (un-applied) changes |
 | parseJson        | `(raw: any) => void`                                   | parse json response                                                                                      |
 | parseHash        | `(hashed: string) => void`                             | parse parameters from Base64 encoded string                                                              |
 | onApply          | `(callback: Callback) => Callback`                     | register a callback to call after request parameter changes                                              |
@@ -172,11 +172,11 @@ create event hub.
 import { useEvent } from "@termehui/vutils";
 
 const eHub = useEvent();
-eHub.onPass<number>("increment", v => console.log(`${v + 1}`));
-eHub.onPass(["greet", "welcome"], v => console.log(`greeting ${v}`));
+eHub.onPass<number>("increment", (v) => console.log(`${v + 1}`));
+eHub.onPass(["greet", "welcome"], (v) => console.log(`greeting ${v}`));
 hub.onSuccess((m, v) => console.log(`${v} received from ${m} method!`)); // called if no receiver func registered for event
 
-eHub.onFail("greet", v => console.error(`who are you`));
+eHub.onFail("greet", (v) => console.error(`who are you`));
 hub.onError((m, err) =>
   console.error(`${err} error received from ${m} method!`)
 ); // called if no error handler registered for event
@@ -191,11 +191,13 @@ import { createApp } from "vue";
 import { AutoComponent } from "@termehui/vutils";
 
 const app = createApp(Layout);
-app.use(AutoComponent([
-  { 
-    files: import.meta.globEager('./components/icons/*.vue'), // vite function to get files list
-    prefix: "I",
-  }, // register IAdd, IEdit, IDelete, ... icons component
-]));
+app.use(
+  AutoComponent([
+    {
+      files: import.meta.glob("./components/icons/*.vue", { eager: true }), // vite function to get files list
+      prefix: "I",
+    }, // register IAdd, IEdit, IDelete, ... icons component
+  ])
+);
 app.mount();
 ```
