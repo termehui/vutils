@@ -47,6 +47,13 @@ interface Lister {
         search: string;
         filters: any;
     }>;
+    newParams: ComputedRef<{
+        page: number;
+        limit: number;
+        sorts: { field: string; order: OrderType }[];
+        search: string;
+        filters: any;
+    }>;
     response: ComputedRef<{
         [x: string]: unknown;
     }>;
@@ -200,6 +207,16 @@ export function useLister(opt: ListerOption, key: string): Lister {
             limit: limit as number,
             sort: sort as string,
             order: order as OrderType,
+            search: search as string,
+            filters,
+        };
+    }
+    function _newParams(v: any) {
+        const { page, limit, sort, order, search, filters } = utils.objectOf(v);
+        return {
+            page: page as number,
+            limit: limit as number,
+            sorts: [{ field: sort as string, order: order as OrderType }],
             search: search as string,
             filters,
         };
@@ -403,6 +420,7 @@ export function useLister(opt: ListerOption, key: string): Lister {
     }
     const onApply = (callback: Callback) => (_callback = callback);
     const params = computed(() => _params(_response.value));
+    const newParams = computed(() => _newParams(_response.value));
     const response = computed(() => utils.clone(_response.value));
     const hash = computed(() => utils.encode(JSON.stringify(params.value)));
     const records = computed(() => utils.arrayOf(_response.value["data"]));
@@ -437,6 +455,7 @@ export function useLister(opt: ListerOption, key: string): Lister {
         parseJson,
         parseHash,
         params,
+        newParams,
         response,
         hash,
         records,
